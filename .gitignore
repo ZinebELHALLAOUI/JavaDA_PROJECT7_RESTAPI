@@ -1,0 +1,8 @@
+target
+.DS_Store
+.classpath
+.project
+.settings/
+.idea
+.iml
+JavaDA_PROJECT7_RESTAPI.iml
