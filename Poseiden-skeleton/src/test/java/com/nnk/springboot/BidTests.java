@@ -33,7 +33,7 @@ public class BidTests {
 
 		// Find
 		List<BidList> listResult = bidListRepository.findAll();
-		assertTrue(listResult.size() > 0);
+        assertFalse(listResult.isEmpty());
 
 		// Delete
 		Integer id = bid.getBidListId();
