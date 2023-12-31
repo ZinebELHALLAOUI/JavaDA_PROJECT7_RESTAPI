@@ -1,7 +1,6 @@
 package com.nnk.springboot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Rating {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
     private String moodysRating;
     private String sandPRating;

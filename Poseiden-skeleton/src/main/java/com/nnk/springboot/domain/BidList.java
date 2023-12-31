@@ -1,7 +1,6 @@
 package com.nnk.springboot.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +12,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class BidList {
 
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer BidListId;
     private String account;
     private String type;
