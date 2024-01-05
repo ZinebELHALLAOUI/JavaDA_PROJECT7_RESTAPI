@@ -5,11 +5,13 @@ import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.services.TradeService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class TradeServiceImpl implements TradeService {
 

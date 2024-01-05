@@ -5,11 +5,13 @@ import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class BidListServiceImpl implements BidListService {
 
