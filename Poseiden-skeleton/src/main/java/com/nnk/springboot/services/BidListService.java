@@ -10,7 +10,10 @@ public interface BidListService {
 
     Optional<BidList> findBidById(Integer bidId);
 
-    BidList saveBid(BidList bidList);
+    BidList createBid(BidList bidList);
+
+    BidList updateBid(BidList bidList);
+
 
     void deleteBid(Integer bidId);
 }

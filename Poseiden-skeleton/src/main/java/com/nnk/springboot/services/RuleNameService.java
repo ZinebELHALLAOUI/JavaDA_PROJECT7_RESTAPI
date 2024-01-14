@@ -11,7 +11,9 @@ public interface RuleNameService {
 
     Optional<RuleName> findRuleNameById(Integer ruleNameId);
 
-    RuleName saveRuleName(RuleName ruleName);
+    RuleName createRuleName(RuleName ruleName);
+
+    RuleName updateRuleName(RuleName ruleName);
 
     void deleteRuleName(Integer ruleNameId);
 }

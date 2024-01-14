@@ -11,7 +11,9 @@ public interface RatingService {
 
     Optional<Rating> findRatingById(Integer ratingId);
 
-    Rating saveRating(Rating rating);
+    Rating createRating(Rating rating);
+
+    Rating updateRating(Rating rating);
 
     void deleteRating(Integer ratingId);
 

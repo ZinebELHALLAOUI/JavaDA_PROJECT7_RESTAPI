@@ -58,7 +58,7 @@ public class CurvePointServiceImplTest {
 
         when(curvePointRepository.save(sampleCurvePoint)).thenReturn(sampleCurvePoint);
 
-        CurvePoint result = curvePointService.saveCurvePoint(sampleCurvePoint);
+        CurvePoint result = curvePointService.createCurvePoint(sampleCurvePoint);
 
         assertEquals(sampleCurvePoint, result);
 

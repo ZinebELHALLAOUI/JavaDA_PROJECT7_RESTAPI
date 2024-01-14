@@ -60,7 +60,7 @@ public class BidListServiceImplTest {
         when(bidListRepository.save(bid)).thenReturn(bid);
 
         // When
-        BidList result = bidListService.saveBid(bid);
+        BidList result = bidListService.createBid(bid);
 
         // Then
         assertNotNull(result);

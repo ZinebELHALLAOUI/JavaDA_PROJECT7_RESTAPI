@@ -11,7 +11,9 @@ public interface TradeService {
 
     Optional<Trade> findTradeById(Integer tradeId);
 
-    Trade saveTrade(Trade trade);
+    Trade createTrade(Trade trade);
+
+    Trade updateTrade(Trade trade);
 
     void deleteTrade(Integer tradeId);
 }

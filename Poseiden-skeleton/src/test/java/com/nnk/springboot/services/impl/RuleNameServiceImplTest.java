@@ -59,7 +59,7 @@ public class RuleNameServiceImplTest {
 
         when(ruleNameRepository.save(sampleRuleName)).thenReturn(sampleRuleName);
 
-        RuleName result = ruleNameService.saveRuleName(sampleRuleName);
+        RuleName result = ruleNameService.createRuleName(sampleRuleName);
 
         assertEquals(sampleRuleName, result);
 

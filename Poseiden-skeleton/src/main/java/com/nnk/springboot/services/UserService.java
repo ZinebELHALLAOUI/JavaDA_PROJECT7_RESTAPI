@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface UserService {
 
-    void createOrUpdateUser(final User user);
+    User createUser(final User user);
+
+    User updateUser(final User user);
 
     List<User> findAll();
 

@@ -59,7 +59,7 @@ public class RatingServiceImplTest {
 
         when(ratingRepository.save(sampleRating)).thenReturn(sampleRating);
 
-        Rating result = ratingService.saveRating(sampleRating);
+        Rating result = ratingService.createRating(sampleRating);
 
         assertEquals(sampleRating, result);
 
