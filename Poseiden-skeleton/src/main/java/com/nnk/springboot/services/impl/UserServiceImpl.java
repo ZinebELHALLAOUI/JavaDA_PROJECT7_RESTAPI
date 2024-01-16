@@ -18,14 +18,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+//    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User createUser(final User user) {
         log.info("Creating user : " + user);
         Assert.isNull(user.getId(), "user id should be null for creation");
         Assert.isNotFound(userRepository.existsByUsername(user.getUsername()),"Username already exists");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
         final Integer id = user.getId();
         Assert.notNull(id, "user id should not be null for update");
         Assert.isFound(userRepository.existsById(id), "user requested for update does not exist");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
