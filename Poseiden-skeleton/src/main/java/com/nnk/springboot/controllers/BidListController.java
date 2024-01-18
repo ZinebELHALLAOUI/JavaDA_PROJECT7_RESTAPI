@@ -36,30 +36,21 @@ public class BidListController {
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
-        try {
-            bidListService.createBid(bid);
-            return home(model);
-        } catch (IllegalArgumentException e) {
-            //TODO handle error
-            return "bidList/add";
-        }
+        bidListService.createBid(bid);
+        return home(model);
     }
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
         //TODO handle error
-        model.addAttribute("bidList", bidListService.findBidById(id));
+        model.addAttribute("bidList", bidListService.findBidById(id).get());
         return "bidList/update";
     }
 
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                             BindingResult result, Model model) {
-        try {
             bidListService.updateBid(bidList);
-        } catch (IllegalArgumentException | NotFoundException e) {
-            //TODO handle error
-        }
         return "redirect:/bidList/list";
     }
 

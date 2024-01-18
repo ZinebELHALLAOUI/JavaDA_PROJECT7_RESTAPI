@@ -14,7 +14,7 @@ public class BidList {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer BidListId;
+    private Integer id;
     private String account;
     private String type;
     private Double bidQuantity;
