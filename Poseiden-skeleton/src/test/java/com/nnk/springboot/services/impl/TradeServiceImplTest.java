@@ -58,7 +58,7 @@ public class TradeServiceImplTest {
 
         when(tradeRepository.save(sampleTrade)).thenReturn(sampleTrade);
 
-        Trade result = tradeService.saveTrade(sampleTrade);
+        Trade result = tradeService.createTrade(sampleTrade);
 
         assertEquals(sampleTrade, result);
 

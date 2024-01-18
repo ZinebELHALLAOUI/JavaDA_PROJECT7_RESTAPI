@@ -25,32 +25,30 @@ public class BidListServiceImpl implements BidListService {
     }
 
     @Override
-    public Optional<BidList> findBidById(final Integer bidId) {
+    public Optional<BidList> findBidById(final int bidId) {
         log.info("Find Bid by id : " + bidId);
-        Assert.notNull(bidId, "Bid id should not be null");
         return bidListRepository.findById(bidId);
     }
 
     @Override
     public BidList createBid(final BidList bidList) {
         log.info("Creating Bid : "+ bidList);
-        Assert.isNull(bidList.getBidListId(), "Bid id should be null for creation");
+        Assert.isNull(bidList.getId(), "Bid id should be null for creation");
         return bidListRepository.save(bidList);
     }
 
     @Override
     public BidList updateBid(final BidList bidList) {
         log.info("Updating Bid : "+ bidList);
-        final Integer bidId = bidList.getBidListId();
+        final Integer bidId = bidList.getId();
         Assert.notNull(bidId, "Bid id should not be null for update");
         Assert.isFound(bidListRepository.existsById(bidId), "Bid requested for update does not exist");
         return bidListRepository.save(bidList);
     }
 
     @Override
-    public void deleteBid(Integer bidId) {
+    public void deleteBid(int bidId) {
         log.info("Deleting by bid id : " + bidId);
-        Assert.notNull(bidId, "Bid id should not be null");
         Assert.isFound(bidListRepository.existsById(bidId), "Bid requested for delete does not exist");
         bidListRepository.deleteById(bidId);
     }

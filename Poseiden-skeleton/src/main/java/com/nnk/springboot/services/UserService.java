@@ -13,7 +13,7 @@ public interface UserService {
 
     List<User> findAll();
 
-    Optional<User> findById(Integer id);
+    Optional<User> findById(int id);
 
     void deleteById(int id);
 }

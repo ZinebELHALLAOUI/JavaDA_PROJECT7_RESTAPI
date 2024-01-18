@@ -9,12 +9,12 @@ public interface RatingService {
 
     List<Rating> findAllRatings();
 
-    Optional<Rating> findRatingById(Integer ratingId);
+    Optional<Rating> findRatingById(int ratingId);
 
     Rating createRating(Rating rating);
 
     Rating updateRating(Rating rating);
 
-    void deleteRating(Integer ratingId);
+    void deleteRating(int ratingId);
 
 }

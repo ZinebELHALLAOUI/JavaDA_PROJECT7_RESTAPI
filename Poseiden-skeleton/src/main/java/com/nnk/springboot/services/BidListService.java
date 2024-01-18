@@ -8,12 +8,12 @@ import java.util.Optional;
 public interface BidListService {
     List<BidList> findAllBids();
 
-    Optional<BidList> findBidById(Integer bidId);
+    Optional<BidList> findBidById(int bidId);
 
     BidList createBid(BidList bidList);
 
     BidList updateBid(BidList bidList);
 
 
-    void deleteBid(Integer bidId);
+    void deleteBid(int bidId);
 }

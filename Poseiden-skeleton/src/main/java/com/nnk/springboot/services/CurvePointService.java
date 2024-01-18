@@ -9,11 +9,11 @@ public interface CurvePointService {
 
     List<CurvePoint> findAllCurvePoints();
 
-    Optional<CurvePoint> findCurvePointById(Integer curvePointId);
+    Optional<CurvePoint> findCurvePointById(int curvePointId);
 
     CurvePoint createCurvePoint(CurvePoint curvePoint);
 
     CurvePoint updateCurvePoint(CurvePoint curvePoint);
 
-    void deleteCurvePoint(Integer curvePointId);
+    void deleteCurvePoint(int curvePointId);
 }

@@ -40,7 +40,7 @@ public class BidListServiceImplTest {
     void testFindBidById() {
         // Given
         BidList bid = new BidList();
-        bid.setBidListId(1);
+        bid.setId(1);
 
         when(bidListRepository.findById(1)).thenReturn(Optional.of(bid));
 
@@ -49,7 +49,7 @@ public class BidListServiceImplTest {
 
         // Then
         assertTrue(result.isPresent());
-        assertEquals(1, result.get().getBidListId());
+        assertEquals(1, result.get().getId());
         verify(bidListRepository, times(1)).findById(1);
     }
 

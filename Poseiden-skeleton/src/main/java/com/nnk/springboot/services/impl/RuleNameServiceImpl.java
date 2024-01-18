@@ -25,9 +25,8 @@ public class RuleNameServiceImpl implements RuleNameService {
     }
 
     @Override
-    public Optional<RuleName> findRuleNameById(final Integer ruleNameId) {
+    public Optional<RuleName> findRuleNameById(final int ruleNameId) {
         log.info("Find rule Name by id : " + ruleNameId);
-        Assert.notNull(ruleNameId, "rule Name id should not be null");
         return ruleNameRepository.findById(ruleNameId);
     }
 
@@ -48,9 +47,8 @@ public class RuleNameServiceImpl implements RuleNameService {
     }
 
     @Override
-    public void deleteRuleName(final Integer ruleNameId) {
+    public void deleteRuleName(final int ruleNameId) {
         log.info("Deleting by rule Name id : " + ruleNameId);
-        Assert.notNull(ruleNameId, "rule Name id should not be null");
         Assert.isFound(ruleNameRepository.existsById(ruleNameId), "rule Name requested for delete does not exist");
         ruleNameRepository.deleteById(ruleNameId);
     }

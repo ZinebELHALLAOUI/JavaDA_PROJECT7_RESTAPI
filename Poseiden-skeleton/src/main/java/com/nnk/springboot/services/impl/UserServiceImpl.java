@@ -46,16 +46,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Integer id) {
+    public Optional<User> findById(int id) {
         log.info("Find user by id : " + id);
-        Assert.notNull(id, "user id should not be null");
         return userRepository.findById(id);
     }
 
     @Override
     public void deleteById(int id) {
         log.info("Deleting by user id : " + id);
-        Assert.notNull(id, "user id should not be null");
         Assert.isFound(userRepository.existsById(id), "user requested for delete does not exist");
         userRepository.deleteById(id);
     }

@@ -9,11 +9,11 @@ public interface RuleNameService {
 
     List<RuleName> findAllRuleNames();
 
-    Optional<RuleName> findRuleNameById(Integer ruleNameId);
+    Optional<RuleName> findRuleNameById(int ruleNameId);
 
     RuleName createRuleName(RuleName ruleName);
 
     RuleName updateRuleName(RuleName ruleName);
 
-    void deleteRuleName(Integer ruleNameId);
+    void deleteRuleName(int ruleNameId);
 }

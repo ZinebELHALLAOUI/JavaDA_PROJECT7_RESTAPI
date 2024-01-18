@@ -9,11 +9,11 @@ public interface TradeService {
 
     List<Trade> findAllTrades();
 
-    Optional<Trade> findTradeById(Integer tradeId);
+    Optional<Trade> findTradeById(int tradeId);
 
     Trade createTrade(Trade trade);
 
     Trade updateTrade(Trade trade);
 
-    void deleteTrade(Integer tradeId);
+    void deleteTrade(int tradeId);
 }

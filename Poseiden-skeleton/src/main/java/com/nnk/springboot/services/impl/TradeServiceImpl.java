@@ -25,9 +25,8 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public Optional<Trade> findTradeById(final Integer tradeId) {
+    public Optional<Trade> findTradeById(final int tradeId) {
         log.info("Find trade by id : " + tradeId);
-        Assert.notNull(tradeId, "trade id should not be null");
         return tradeRepository.findById(tradeId);
     }
 
@@ -48,9 +47,8 @@ public class TradeServiceImpl implements TradeService {
     }
 
     @Override
-    public void deleteTrade(final Integer tradeId) {
+    public void deleteTrade(final int tradeId) {
         log.info("Deleting by trade id : " + tradeId);
-        Assert.notNull(tradeId, "trade id should not be null");
         Assert.isFound(tradeRepository.existsById(tradeId), "trade requested for delete does not exist");
         tradeRepository.deleteById(tradeId);
     }

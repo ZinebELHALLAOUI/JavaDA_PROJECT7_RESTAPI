@@ -25,9 +25,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public Optional<Rating> findRatingById(final Integer ratingId) {
+    public Optional<Rating> findRatingById(final int ratingId) {
         log.info("Find rating by id : " + ratingId);
-        Assert.notNull(ratingId, "rating id should not be null");
         return ratingRepository.findById(ratingId);
     }
 
@@ -48,9 +47,8 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
-    public void deleteRating(final Integer ratingId) {
+    public void deleteRating(final int ratingId) {
         log.info("Deleting by rating id : " + ratingId);
-        Assert.notNull(ratingId, "rating id should not be null");
         Assert.isFound(ratingRepository.existsById(ratingId), "rating requested for delete does not exist");
         ratingRepository.deleteById(ratingId);
     }

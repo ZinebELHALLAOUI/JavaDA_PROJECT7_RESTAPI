@@ -1,5 +1,6 @@
 package com.nnk.springboot.services.impl;
 
+import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.services.CurvePointService;
@@ -25,9 +26,8 @@ public class CurvePointServiceImpl implements CurvePointService {
     }
 
     @Override
-    public Optional<CurvePoint> findCurvePointById(final Integer curvePointId) {
+    public Optional<CurvePoint> findCurvePointById(final int curvePointId) {
         log.info("Find curve Point by id : " + curvePointId);
-        Assert.notNull(curvePointId, "curve Point id should not be null");
         return curvePointRepository.findById(curvePointId);
     }
 
@@ -48,9 +48,8 @@ public class CurvePointServiceImpl implements CurvePointService {
     }
 
     @Override
-    public void deleteCurvePoint(final Integer curvePointId) {
+    public void deleteCurvePoint(final int curvePointId) {
         log.info("Deleting by curve Point id : " + curvePointId);
-        Assert.notNull(curvePointId, "curve Point id should not be null");
         Assert.isFound(curvePointRepository.existsById(curvePointId), "curve Point requested for delete does not exist");
         curvePointRepository.deleteById(curvePointId);
     }
