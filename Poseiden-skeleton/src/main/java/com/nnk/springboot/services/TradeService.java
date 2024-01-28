@@ -13,7 +13,7 @@ public interface TradeService {
 
     Trade createTrade(Trade trade);
 
-    Trade updateTrade(Trade trade);
+    Trade updateTrade(int id, Trade trade);
 
     void deleteTrade(int tradeId);
 }

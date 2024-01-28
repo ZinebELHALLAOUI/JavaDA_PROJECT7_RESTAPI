@@ -1,11 +1,16 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.exceptions.Assert;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.UserRepository;
 import com.nnk.springboot.services.UserService;
-import com.nnk.springboot.services.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,28 +20,30 @@ import java.util.Optional;
 @Service
 @Slf4j
 @AllArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User createUser(final User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         log.info("Creating user : " + user);
-        Assert.isNull(user.getId(), "user id should be null for creation");
-        Assert.isNotFound(userRepository.existsByUsername(user.getUsername()),"Username already exists");
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        Assert.isNotFound(userRepository.existsByUsername(user.getUsername()), "Username already exists");
         return userRepository.save(user);
     }
 
     @Override
-    public User updateUser(User user) {
+    public User updateUser(int id, User user) {
         log.info("Updating user : " + user);
-        final Integer id = user.getId();
-        Assert.notNull(id, "user id should not be null for update");
-        Assert.isFound(userRepository.existsById(id), "user requested for update does not exist");
-//        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        var userFound = userRepository.findById(id).orElseThrow(() -> new NotFoundException("user does not exist"));
+        if (!user.getUsername().equalsIgnoreCase(userFound.getUsername()) && userRepository.findById(id).isPresent())
+            throw new IllegalArgumentException("Username already exists");
+        userFound.setPassword(passwordEncoder.encode(user.getPassword()));
+        userFound.setUsername(user.getUsername());
+        userFound.setFullname(user.getFullname());
+        userFound.setRole(user.getRole());
+        return userRepository.saveAndFlush(userFound);
     }
 
     @Override
@@ -56,5 +63,11 @@ public class UserServiceImpl implements UserService {
         log.info("Deleting by user id : " + id);
         Assert.isFound(userRepository.existsById(id), "user requested for delete does not exist");
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), List.of(new SimpleGrantedAuthority(user.getRole().name())));
     }
 }

@@ -1,4 +1,6 @@
-package com.nnk.springboot.services.exceptions;
+package com.nnk.springboot.exceptions;
+
+import org.springframework.lang.Nullable;
 
 public class Assert extends org.springframework.util.Assert{
     public static void isFound(boolean expression, String message) {

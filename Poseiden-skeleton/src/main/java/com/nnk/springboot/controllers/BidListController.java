@@ -1,10 +1,11 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.exceptions.Assert;
 import com.nnk.springboot.services.BidListService;
-import com.nnk.springboot.services.exceptions.NotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
+@Slf4j
 public class BidListController {
 
     private final BidListService bidListService;
@@ -36,13 +38,17 @@ public class BidListController {
 
     @PostMapping("/bidList/validate")
     public String validate(@Valid BidList bid, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            log.error("Errors: " + result.getAllErrors());
+            return "bidList/add";
+        }
+        Assert.isNull(bid.getId(), "Bid id should be null for creation");
         bidListService.createBid(bid);
         return home(model);
     }
 
     @GetMapping("/bidList/update/{id}")
     public String showUpdateForm(@PathVariable("id") Integer id, Model model) {
-        //TODO handle error
         model.addAttribute("bidList", bidListService.findBidById(id).get());
         return "bidList/update";
     }
@@ -50,17 +56,17 @@ public class BidListController {
     @PostMapping("/bidList/update/{id}")
     public String updateBid(@PathVariable("id") Integer id, @Valid BidList bidList,
                             BindingResult result, Model model) {
-            bidListService.updateBid(bidList);
+        if (result.hasErrors()) {
+            log.error("Errors: " + result.getAllErrors());
+            return "bidList/update";
+        }
+        bidListService.updateBid(id, bidList);
         return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/delete/{id}")
     public String deleteBid(@PathVariable("id") Integer id, Model model) {
-        try {
-            bidListService.deleteBid(id);
-        } catch (IllegalArgumentException | NotFoundException e) {
-            //TODO handle error
-        }
+        bidListService.deleteBid(id);
         return "redirect:/bidList/list";
     }
 }

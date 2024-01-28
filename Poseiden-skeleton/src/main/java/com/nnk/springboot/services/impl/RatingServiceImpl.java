@@ -1,9 +1,10 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Rating;
+import com.nnk.springboot.exceptions.Assert;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.RatingRepository;
 import com.nnk.springboot.services.RatingService;
-import com.nnk.springboot.services.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,18 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating createRating(final Rating rating) {
         log.info("Creating rating : " + rating);
-        Assert.isNull(rating.getId(), "rating id should be null for creation");
         return ratingRepository.save(rating);
     }
 
     @Override
-    public Rating updateRating(final Rating rating) {
+    public Rating updateRating(int id, Rating rating) {
         log.info("Updating rating : " + rating);
-        final Integer id = rating.getId();
-        Assert.notNull(id, "rating id should not be null for update");
-        Assert.isFound(ratingRepository.existsById(id), "rating requested for update does not exist");
-        return ratingRepository.save(rating);
+        Rating ratingFound = ratingRepository.findById(id).orElseThrow(() -> new NotFoundException("Rating name does not exist"));
+        ratingFound.setMoodysRating(rating.getMoodysRating());
+        ratingFound.setSandPRating(rating.getSandPRating());
+        ratingFound.setFitchRating(rating.getFitchRating());
+        ratingFound.setOrderNumber(rating.getOrderNumber());
+        return ratingRepository.saveAndFlush(ratingFound);
     }
 
     @Override

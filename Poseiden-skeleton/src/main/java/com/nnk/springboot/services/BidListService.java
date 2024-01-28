@@ -12,7 +12,7 @@ public interface BidListService {
 
     BidList createBid(BidList bidList);
 
-    BidList updateBid(BidList bidList);
+    BidList updateBid(int id, BidList bidList);
 
 
     void deleteBid(int bidId);

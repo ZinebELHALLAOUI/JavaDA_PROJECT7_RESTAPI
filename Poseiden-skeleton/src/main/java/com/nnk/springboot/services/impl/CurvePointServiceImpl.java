@@ -1,10 +1,10 @@
 package com.nnk.springboot.services.impl;
 
-import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.domain.CurvePoint;
+import com.nnk.springboot.exceptions.Assert;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.CurvePointRepository;
 import com.nnk.springboot.services.CurvePointService;
-import com.nnk.springboot.services.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,17 +34,16 @@ public class CurvePointServiceImpl implements CurvePointService {
     @Override
     public CurvePoint createCurvePoint(final CurvePoint curvePoint) {
         log.info("Creating curve Point : " + curvePoint);
-        Assert.isNull(curvePoint.getCurveId(), "curve Point id should be null for creation");
         return curvePointRepository.save(curvePoint);
     }
 
     @Override
-    public CurvePoint updateCurvePoint(CurvePoint curvePoint) {
+    public CurvePoint updateCurvePoint(int id, CurvePoint curvePoint) {
         log.info("Updating curve Point : " + curvePoint);
-        final Integer id = curvePoint.getCurveId();
-        Assert.notNull(id, "curve Point id should not be null for update");
-        Assert.isFound(curvePointRepository.existsById(id), "curve Point requested for update does not exist");
-        return curvePointRepository.save(curvePoint);
+        CurvePoint curvePointFound = curvePointRepository.findById(id).orElseThrow(() -> new NotFoundException("Curve Point does not exist"));
+        curvePointFound.setTerm(curvePoint.getTerm());
+        curvePointFound.setValue(curvePoint.getValue());
+        return curvePointRepository.saveAndFlush(curvePointFound);
     }
 
     @Override

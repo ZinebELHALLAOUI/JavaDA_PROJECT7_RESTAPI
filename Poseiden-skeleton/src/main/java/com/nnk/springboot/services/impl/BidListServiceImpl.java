@@ -1,9 +1,10 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.BidList;
+import com.nnk.springboot.exceptions.Assert;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
-import com.nnk.springboot.services.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,18 +33,18 @@ public class BidListServiceImpl implements BidListService {
 
     @Override
     public BidList createBid(final BidList bidList) {
-        log.info("Creating Bid : "+ bidList);
-        Assert.isNull(bidList.getId(), "Bid id should be null for creation");
+        log.info("Creating Bid : " + bidList);
         return bidListRepository.save(bidList);
     }
 
     @Override
-    public BidList updateBid(final BidList bidList) {
-        log.info("Updating Bid : "+ bidList);
-        final Integer bidId = bidList.getId();
-        Assert.notNull(bidId, "Bid id should not be null for update");
-        Assert.isFound(bidListRepository.existsById(bidId), "Bid requested for update does not exist");
-        return bidListRepository.save(bidList);
+    public BidList updateBid(int id, final BidList bidList) {
+        log.info("Updating Bid : " + bidList);
+        BidList bidFound = bidListRepository.findById(id).orElseThrow(() -> new NotFoundException("Bid does not exist"));
+        bidFound.setAccount(bidList.getAccount());
+        bidFound.setType(bidList.getType());
+        bidFound.setBidQuantity(bidList.getBidQuantity());
+        return bidListRepository.saveAndFlush(bidList);
     }
 
     @Override

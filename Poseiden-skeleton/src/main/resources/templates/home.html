@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title> Spring Boot </title>
-    <link rel="stylesheet" href="/css/styles.css"/>
+    <title>Poseidon Capital Solutions</title>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css">
 </head>
 <body>
+<div class="container">
+<!--/*/ <th:block th:include="fragments/menu.html :: menu"> </th:block> /*/-->
+
 <h3> HOME PAGE </h3>
 <p>
-    <a href="/login">Login</a> or create one <a href="/user/list">User management</a>
+    <a sec:authorize="!isAuthenticated()" href="/login">Login</a>
+<p sec:authorize="isAuthenticated()">
+    Welcome <b sec:authentication="name"></b>, you are connected
 </p>
+</div>
 </body>
 </html>

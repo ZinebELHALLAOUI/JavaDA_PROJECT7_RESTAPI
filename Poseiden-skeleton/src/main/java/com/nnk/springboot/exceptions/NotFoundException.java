@@ -1,4 +1,4 @@
-package com.nnk.springboot.services.exceptions;
+package com.nnk.springboot.exceptions;
 
 public class NotFoundException extends RuntimeException {
 

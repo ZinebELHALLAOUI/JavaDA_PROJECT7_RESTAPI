@@ -13,7 +13,7 @@ public interface RuleNameService {
 
     RuleName createRuleName(RuleName ruleName);
 
-    RuleName updateRuleName(RuleName ruleName);
+    RuleName updateRuleName(int id, RuleName ruleName);
 
     void deleteRuleName(int ruleNameId);
 }

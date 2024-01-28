@@ -1,9 +1,10 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.RuleName;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.RuleNameRepository;
 import com.nnk.springboot.services.RuleNameService;
-import com.nnk.springboot.services.exceptions.Assert;
+import com.nnk.springboot.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,17 @@ public class RuleNameServiceImpl implements RuleNameService {
     @Override
     public RuleName createRuleName(final RuleName ruleName) {
         log.info("Creating rule Name : " + ruleName);
-        Assert.isNull(ruleName.getId(), "rule Name id should be null for creation");
         return ruleNameRepository.save(ruleName);
     }
 
     @Override
-    public RuleName updateRuleName(RuleName ruleName) {
+    public RuleName updateRuleName(int id, RuleName ruleName) {
         log.info("Updating rule Name : " + ruleName);
-        final Integer id = ruleName.getId();
-        Assert.notNull(id, "rule Name id should not be null for update");
-        Assert.isFound(ruleNameRepository.existsById(id), "rule Name requested for update does not exist");
-        return ruleNameRepository.save(ruleName);
+        RuleName ruleNameFound = ruleNameRepository.findById(id).orElseThrow(() -> new NotFoundException("Rule name does not exist"));
+        ruleNameFound.setName(ruleName.getName());
+        ruleNameFound.setDescription(ruleName.getDescription());
+        ruleNameFound.setJson(ruleName.getJson());
+        return ruleNameRepository.saveAndFlush(ruleNameFound);
     }
 
     @Override

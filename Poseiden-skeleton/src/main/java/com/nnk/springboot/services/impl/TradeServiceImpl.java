@@ -1,9 +1,10 @@
 package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Trade;
+import com.nnk.springboot.exceptions.NotFoundException;
 import com.nnk.springboot.repositories.TradeRepository;
 import com.nnk.springboot.services.TradeService;
-import com.nnk.springboot.services.exceptions.Assert;
+import com.nnk.springboot.exceptions.Assert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,17 +34,17 @@ public class TradeServiceImpl implements TradeService {
     @Override
     public Trade createTrade(final Trade trade) {
         log.info("Creating trade : " + trade);
-        Assert.isNull(trade.getTradeId(), "trade id should be null for creation");
         return tradeRepository.save(trade);
     }
 
     @Override
-    public Trade updateTrade(final Trade trade) {
+    public Trade updateTrade(int id, final Trade trade) {
         log.info("Updating trade : " + trade);
-        final Integer id = trade.getTradeId();
-        Assert.notNull(id, "trade id should not be null for update");
-        Assert.isFound(tradeRepository.existsById(id), "trade requested for update does not exist");
-        return tradeRepository.save(trade);
+        Trade tradeFound = tradeRepository.findById(id).orElseThrow(() -> new NotFoundException("Trade does not exist"));
+        tradeFound.setAccount(trade.getAccount());
+        tradeFound.setType(trade.getType());
+        tradeFound.setBuyPrice(trade.getBuyQuantity());
+        return tradeRepository.saveAndFlush(tradeFound);
     }
 
     @Override

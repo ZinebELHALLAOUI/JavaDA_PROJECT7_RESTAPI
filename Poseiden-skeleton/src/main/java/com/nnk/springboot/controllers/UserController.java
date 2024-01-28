@@ -1,9 +1,11 @@
 package com.nnk.springboot.controllers;
 
 import com.nnk.springboot.domain.User;
+import com.nnk.springboot.exceptions.Assert;
 import com.nnk.springboot.services.UserService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @AllArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -31,8 +34,14 @@ public class UserController {
 
     @PostMapping("/user/validate")
     public String validate(@Valid User user, BindingResult result, Model model) {
+        Assert.isNull(user.getId(), "User id should be null for creation");
         if (!result.hasErrors()) {
-            userService.createUser(user);
+            try {
+                userService.createUser(user);
+            } catch (IllegalArgumentException exception) {
+                result.rejectValue("username", "username.invalid", "user already exists");
+                return "user/add";
+            }
             model.addAttribute("users", userService.findAll());
             return "redirect:/user/list";
         }
@@ -48,14 +57,12 @@ public class UserController {
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user,
-                             BindingResult result, Model model) {
+    public String updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult result, Model model) {
         if (result.hasErrors()) {
+            log.error("Errors: " + result.getAllErrors());
             return "user/update";
         }
-        user.setId(id);
-
-        userService.createUser(user);
+        userService.updateUser(id, user);
         model.addAttribute("users", userService.findAll());
         return "redirect:/user/list";
     }

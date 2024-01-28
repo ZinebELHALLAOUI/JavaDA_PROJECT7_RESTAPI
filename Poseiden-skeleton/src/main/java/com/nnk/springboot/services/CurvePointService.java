@@ -13,7 +13,7 @@ public interface CurvePointService {
 
     CurvePoint createCurvePoint(CurvePoint curvePoint);
 
-    CurvePoint updateCurvePoint(CurvePoint curvePoint);
+    CurvePoint updateCurvePoint(int id, CurvePoint curvePoint);
 
     void deleteCurvePoint(int curvePointId);
 }

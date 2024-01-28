@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<block  th:fragment="menu">
+    <div sec:authorize="isAuthenticated()" class="row">
+        <div class="col-6">
+            <a href="/bidList/list">Bid List</a>&nbsp;|&nbsp;
+            <a href="/curvePoint/list">Curve Points</a>&nbsp;|&nbsp;
+            <a href="/rating/list">Ratings</a>&nbsp;|&nbsp;
+            <a href="/trade/list">Trade</a>&nbsp;|&nbsp;
+            <a href="/ruleName/list">Rule</a> |
+            <a sec:authorize="hasAuthority('ADMIN')" href="/user/list">User</a>
+        </div>
+        <div sec:authorize="isAuthenticated()" class="col-6 text-right">
+            Logged in user: <b class="user"> <span sec:authentication="name"></span> </b>
+            <form th:action="@{/logout}" method="POST">
+                <input type="submit" value="Logout"/>
+            </form>
+        </div>
+    </div>
+</block>
+</html>
