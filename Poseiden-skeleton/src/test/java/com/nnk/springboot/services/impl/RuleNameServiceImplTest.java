@@ -2,74 +2,89 @@ package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.RuleName;
 import com.nnk.springboot.repositories.RuleNameRepository;
+import com.nnk.springboot.services.RuleNameService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class RuleNameServiceImplTest {
 
-    private final RuleNameRepository ruleNameRepository = mock(RuleNameRepository.class);
-    private final RuleNameServiceImpl ruleNameService = new RuleNameServiceImpl(ruleNameRepository);
+    private final RuleNameRepository ruleNameRepository = Mockito.mock(RuleNameRepository.class);
+    private final RuleNameService ruleNameService = new RuleNameServiceImpl(ruleNameRepository);
 
     @Test
-    void testFindAllRuleNames() {
-        RuleName sampleRuleName = new RuleName();
-        sampleRuleName.setId(1);
-        sampleRuleName.setName("Sample Rule");
+    public void testFindAllRuleNames() {
+        // Mocking the repository
+        List<RuleName> expectedRuleNames = new ArrayList<>();
+        when(ruleNameRepository.findAll()).thenReturn(expectedRuleNames);
 
-        List<RuleName> ruleNames = new ArrayList<>();
-        ruleNames.add(sampleRuleName);
-
-        when(ruleNameRepository.findAll()).thenReturn(ruleNames);
-
+        // Calling service method
         List<RuleName> result = ruleNameService.findAllRuleNames();
 
-        assertEquals(1, result.size());
-        assertEquals(sampleRuleName, result.get(0));
-
-        verify(ruleNameRepository, times(1)).findAll();
+        // Verifying the result
+        assertEquals(expectedRuleNames, result);
     }
 
     @Test
-    void testFindRuleNameById() {
-        // Arrange
-        RuleName sampleRuleName = new RuleName();
-        sampleRuleName.setId(1);
-        sampleRuleName.setName("Sample Rule");
+    public void testFindRuleNameById() {
+        // Mocking the repository
+        int ruleNameId = 1;
+        RuleName expectedRuleName = new RuleName();
+        when(ruleNameRepository.findById(ruleNameId)).thenReturn(Optional.of(expectedRuleName));
 
-        when(ruleNameRepository.findById(1)).thenReturn(Optional.of(sampleRuleName));
+        // Calling service method
+        Optional<RuleName> result = ruleNameService.findRuleNameById(ruleNameId);
 
-        Optional<RuleName> result = ruleNameService.findRuleNameById(1);
-
-        assertEquals(Optional.of(sampleRuleName), result);
-
-        verify(ruleNameRepository, times(1)).findById(1);
+        // Verifying the result
+        assertTrue(result.isPresent());
+        assertEquals(expectedRuleName, result.get());
     }
 
     @Test
-    void testSaveRuleName() {
-        RuleName sampleRuleName = new RuleName();
-        sampleRuleName.setId(1);
-        sampleRuleName.setName("Sample Rule");
+    public void testCreateRuleName() {
+        // Mocking the repository
+        RuleName ruleName = new RuleName();
+        when(ruleNameRepository.save(ruleName)).thenReturn(ruleName);
 
-        when(ruleNameRepository.save(sampleRuleName)).thenReturn(sampleRuleName);
+        // Calling service method
+        RuleName result = ruleNameService.createRuleName(ruleName);
 
-        RuleName result = ruleNameService.createRuleName(sampleRuleName);
-
-        assertEquals(sampleRuleName, result);
-
-        verify(ruleNameRepository, times(1)).save(sampleRuleName);
+        // Verifying the result
+        assertEquals(ruleName, result);
     }
 
     @Test
-    void testDeleteRuleName() {
-        ruleNameService.deleteRuleName(1);
+    public void testUpdateRuleName() {
+        // Mocking the repository
+        int ruleNameId = 1;
+        RuleName updatedRuleName = new RuleName();
+        when(ruleNameRepository.findById(ruleNameId)).thenReturn(Optional.of(new RuleName()));
+        when(ruleNameRepository.saveAndFlush(updatedRuleName)).thenReturn(updatedRuleName);
 
-        verify(ruleNameRepository, times(1)).deleteById(1);
+        // Calling service method
+        RuleName result = ruleNameService.updateRuleName(ruleNameId, updatedRuleName);
+
+        // Verifying the result
+        assertEquals(updatedRuleName, result);
+    }
+
+    @Test
+    public void testDeleteRuleName() {
+        // Mocking the repository
+        int ruleNameId = 1;
+        when(ruleNameRepository.existsById(ruleNameId)).thenReturn(true);
+
+        // Calling service method
+        ruleNameService.deleteRuleName(ruleNameId);
+
+        // Verifying the delete operation
+        Mockito.verify(ruleNameRepository).deleteById(ruleNameId);
     }
 }

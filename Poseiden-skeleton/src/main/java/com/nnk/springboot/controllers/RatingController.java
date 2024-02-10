@@ -43,7 +43,7 @@ public class RatingController {
         }
         Assert.isNull(rating.getId(), "rating id should be null for creation");
         ratingService.createRating(rating);
-        return "rating/list";
+        return "redirect:/rating/list";
     }
 
     @GetMapping("/rating/update/{id}")

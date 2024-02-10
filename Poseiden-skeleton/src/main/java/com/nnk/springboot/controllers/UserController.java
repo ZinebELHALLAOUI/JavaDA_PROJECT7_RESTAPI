@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -33,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping("/user/validate")
-    public String validate(@Valid User user, BindingResult result, Model model) {
+    public String validate(@Valid User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         Assert.isNull(user.getId(), "User id should be null for creation");
         if (!result.hasErrors()) {
             try {
@@ -42,6 +45,8 @@ public class UserController {
                 result.rejectValue("username", "username.invalid", "user already exists");
                 return "user/add";
             }
+            final List<String> infos = List.of("Request succeed");
+            redirectAttributes.addFlashAttribute("infos", infos);
             model.addAttribute("users", userService.findAll());
             return "redirect:/user/list";
         }
@@ -57,20 +62,24 @@ public class UserController {
     }
 
     @PostMapping("/user/update/{id}")
-    public String updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult result, Model model) {
+    public String updateUser(@PathVariable("id") Integer id, @Valid User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             log.error("Errors: " + result.getAllErrors());
             return "user/update";
         }
         userService.updateUser(id, user);
         model.addAttribute("users", userService.findAll());
+        final List<String> infos = List.of("Request succeed");
+        redirectAttributes.addFlashAttribute("infos", infos);
         return "redirect:/user/list";
     }
 
     @GetMapping("/user/delete/{id}")
-    public String deleteUser(@PathVariable("id") Integer id, Model model) {
+    public String deleteUser(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
         userService.deleteById(id);
         model.addAttribute("users", userService.findAll());
+        final List<String> infos = List.of("Request succeed");
+        redirectAttributes.addFlashAttribute("infos", infos);
         return "redirect:/user/list";
     }
 }

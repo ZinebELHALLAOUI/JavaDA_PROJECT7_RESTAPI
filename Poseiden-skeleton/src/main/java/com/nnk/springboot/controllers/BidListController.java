@@ -44,7 +44,7 @@ public class BidListController {
         }
         Assert.isNull(bid.getId(), "Bid id should be null for creation");
         bidListService.createBid(bid);
-        return home(model);
+        return "redirect:/bidList/list";
     }
 
     @GetMapping("/bidList/update/{id}")

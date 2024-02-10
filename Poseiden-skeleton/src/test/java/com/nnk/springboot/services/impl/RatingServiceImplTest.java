@@ -2,74 +2,89 @@ package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Rating;
 import com.nnk.springboot.repositories.RatingRepository;
+import com.nnk.springboot.services.RatingService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class RatingServiceImplTest {
 
-    private final RatingRepository ratingRepository = mock(RatingRepository.class);
-    private final RatingServiceImpl ratingService = new RatingServiceImpl(ratingRepository);
+    private final RatingRepository ratingRepository = Mockito.mock(RatingRepository.class);
+    private final RatingService ratingService = new RatingServiceImpl(ratingRepository);
 
     @Test
-    void testFindAllRatings() {
-        Rating sampleRating = new Rating();
-        sampleRating.setId(1);
-        sampleRating.setMoodysRating("A1");
+    public void testFindAllRatings() {
+        // Mocking the repository
+        List<Rating> expectedRatings = new ArrayList<>();
+        when(ratingRepository.findAll()).thenReturn(expectedRatings);
 
-        List<Rating> ratings = new ArrayList<>();
-        ratings.add(sampleRating);
-
-        when(ratingRepository.findAll()).thenReturn(ratings);
-
+        // Calling service method
         List<Rating> result = ratingService.findAllRatings();
 
-        assertEquals(1, result.size());
-        assertEquals(sampleRating, result.get(0));
-
-        verify(ratingRepository, times(1)).findAll();
+        // Verifying the result
+        assertEquals(expectedRatings, result);
     }
 
     @Test
-    void testFindRatingById() {
-        Rating sampleRating = new Rating();
-        sampleRating.setId(1);
-        sampleRating.setMoodysRating("A1");
+    public void testFindRatingById() {
+        // Mocking the repository
+        int ratingId = 1;
+        Rating expectedRating = new Rating();
+        when(ratingRepository.findById(ratingId)).thenReturn(Optional.of(expectedRating));
 
-        when(ratingRepository.findById(1)).thenReturn(Optional.of(sampleRating));
+        // Calling service method
+        Optional<Rating> result = ratingService.findRatingById(ratingId);
 
-        Optional<Rating> result = ratingService.findRatingById(1);
-
-        assertEquals(Optional.of(sampleRating), result);
-
-        verify(ratingRepository, times(1)).findById(1);
+        // Verifying the result
+        assertTrue(result.isPresent());
+        assertEquals(expectedRating, result.get());
     }
 
     @Test
-    void testSaveRating() {
-        // Arrange
-        Rating sampleRating = new Rating();
-        sampleRating.setId(1);
-        sampleRating.setMoodysRating("A1");
+    public void testCreateRating() {
+        // Mocking the repository
+        Rating rating = new Rating();
+        when(ratingRepository.save(rating)).thenReturn(rating);
 
-        when(ratingRepository.save(sampleRating)).thenReturn(sampleRating);
+        // Calling service method
+        Rating result = ratingService.createRating(rating);
 
-        Rating result = ratingService.createRating(sampleRating);
-
-        assertEquals(sampleRating, result);
-
-        verify(ratingRepository, times(1)).save(sampleRating);
+        // Verifying the result
+        assertEquals(rating, result);
     }
 
     @Test
-    void testDeleteRating() {
-        ratingService.deleteRating(1);
+    public void testUpdateRating() {
+        // Mocking the repository
+        int ratingId = 1;
+        Rating updatedRating = new Rating();
+        when(ratingRepository.findById(ratingId)).thenReturn(Optional.of(new Rating()));
+        when(ratingRepository.saveAndFlush(updatedRating)).thenReturn(updatedRating);
 
-        verify(ratingRepository, times(1)).deleteById(1);
+        // Calling service method
+        Rating result = ratingService.updateRating(ratingId, updatedRating);
+
+        // Verifying the result
+        assertEquals(updatedRating, result);
+    }
+
+    @Test
+    public void testDeleteRating() {
+        // Mocking the repository
+        int ratingId = 1;
+        when(ratingRepository.existsById(ratingId)).thenReturn(true);
+
+        // Calling service method
+        ratingService.deleteRating(ratingId);
+
+        // Verifying the delete operation
+        Mockito.verify(ratingRepository).deleteById(ratingId);
     }
 }

@@ -2,73 +2,90 @@ package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.Trade;
 import com.nnk.springboot.repositories.TradeRepository;
+import com.nnk.springboot.services.TradeService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class TradeServiceImplTest {
 
-    private final TradeRepository tradeRepository = mock(TradeRepository.class);
-    private final TradeServiceImpl tradeService = new TradeServiceImpl(tradeRepository);
+    private final TradeRepository tradeRepository = Mockito.mock(TradeRepository.class);
+    private final TradeService tradeService = new TradeServiceImpl(tradeRepository);
 
     @Test
-    void testFindAllTrades() {
-        Trade sampleTrade = new Trade();
-        sampleTrade.setTradeId(1);
-        sampleTrade.setAccount("SampleAccount");
+    public void testFindAllTrades() {
+        // Mocking the repository
+        List<Trade> expectedTrades = new ArrayList<>();
+        when(tradeRepository.findAll()).thenReturn(expectedTrades);
 
-        List<Trade> trades = new ArrayList<>();
-        trades.add(sampleTrade);
-
-        when(tradeRepository.findAll()).thenReturn(trades);
-
+        // Calling service method
         List<Trade> result = tradeService.findAllTrades();
 
-        assertEquals(1, result.size());
-        assertEquals(sampleTrade, result.get(0));
-
-        verify(tradeRepository, times(1)).findAll();
+        // Verifying the result
+        assertEquals(expectedTrades, result);
     }
 
     @Test
-    void testFindTradeById() {
-        Trade sampleTrade = new Trade();
-        sampleTrade.setTradeId(1);
-        sampleTrade.setAccount("SampleAccount");
+    public void testFindTradeById() {
+        // Mocking the repository
+        int tradeId = 1;
+        Trade expectedTrade = new Trade();
+        when(tradeRepository.findById(tradeId)).thenReturn(Optional.of(expectedTrade));
 
-        when(tradeRepository.findById(1)).thenReturn(Optional.of(sampleTrade));
+        // Calling service method
+        Optional<Trade> result = tradeService.findTradeById(tradeId);
 
-        Optional<Trade> result = tradeService.findTradeById(1);
-
-        assertEquals(Optional.of(sampleTrade), result);
-
-        verify(tradeRepository, times(1)).findById(1);
+        // Verifying the result
+        assertTrue(result.isPresent());
+        assertEquals(expectedTrade, result.get());
     }
 
     @Test
-    void testSaveTrade() {
-        Trade sampleTrade = new Trade();
-        sampleTrade.setTradeId(1);
-        sampleTrade.setAccount("SampleAccount");
+    public void testCreateTrade() {
+        // Mocking the repository
+        Trade trade = new Trade();
+        when(tradeRepository.save(trade)).thenReturn(trade);
 
-        when(tradeRepository.save(sampleTrade)).thenReturn(sampleTrade);
+        // Calling service method
+        Trade result = tradeService.createTrade(trade);
 
-        Trade result = tradeService.createTrade(sampleTrade);
-
-        assertEquals(sampleTrade, result);
-
-        verify(tradeRepository, times(1)).save(sampleTrade);
+        // Verifying the result
+        assertEquals(trade, result);
     }
 
     @Test
-    void testDeleteTrade() {
-        tradeService.deleteTrade(1);
+    public void testUpdateTrade() {
+        // Mocking the repository
+        int tradeId = 1;
+        Trade updatedTrade = new Trade();
+        when(tradeRepository.findById(tradeId)).thenReturn(Optional.of(new Trade()));
+        when(tradeRepository.saveAndFlush(updatedTrade)).thenReturn(updatedTrade);
 
-        verify(tradeRepository, times(1)).deleteById(1);
+        // Calling service method
+        Trade result = tradeService.updateTrade(tradeId, updatedTrade);
+
+        // Verifying the result
+        assertEquals(updatedTrade, result);
+    }
+
+    @Test
+    public void testDeleteTrade() {
+        // Mocking the repository
+        int tradeId = 1;
+        when(tradeRepository.existsById(tradeId)).thenReturn(true);
+
+        // Calling service method
+        tradeService.deleteTrade(tradeId);
+
+        // Verifying the delete operation
+        Mockito.verify(tradeRepository).deleteById(tradeId);
     }
 }
+

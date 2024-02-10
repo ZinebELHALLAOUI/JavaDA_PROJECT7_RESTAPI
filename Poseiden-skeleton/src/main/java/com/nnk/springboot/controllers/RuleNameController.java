@@ -43,7 +43,7 @@ public class RuleNameController {
         }
         Assert.isNull(ruleName.getId(), "rule Name id should be null for creation");
         ruleNameService.createRuleName(ruleName);
-        return "ruleName/add";
+        return "redirect:/ruleName/list";
     }
 
     @GetMapping("/ruleName/update/{id}")

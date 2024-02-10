@@ -43,7 +43,7 @@ public class TradeController {
         }
         Assert.isNull(trade.getTradeId(), "trade id should be null for creation");
         tradeService.createTrade(trade);
-        return "trade/add";
+        return "redirect:/trade/list";
     }
 
     @GetMapping("/trade/update/{id}")

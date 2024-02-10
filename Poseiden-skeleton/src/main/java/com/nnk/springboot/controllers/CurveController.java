@@ -43,7 +43,7 @@ public class CurveController {
         }
         Assert.isNull(curvePoint.getCurveId(), "curve Point id should be null for creation");
         curvePointService.createCurvePoint(curvePoint);
-        return "curvePoint/list";
+        return "redirect:/curvePoint/list";
     }
 
     @GetMapping("/curvePoint/update/{id}")

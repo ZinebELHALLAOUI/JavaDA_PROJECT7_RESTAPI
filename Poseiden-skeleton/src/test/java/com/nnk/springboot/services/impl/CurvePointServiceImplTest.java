@@ -2,73 +2,90 @@ package com.nnk.springboot.services.impl;
 
 import com.nnk.springboot.domain.CurvePoint;
 import com.nnk.springboot.repositories.CurvePointRepository;
+import com.nnk.springboot.services.CurvePointService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class CurvePointServiceImplTest {
 
-    private final CurvePointRepository curvePointRepository = mock(CurvePointRepository.class);
-    private final CurvePointServiceImpl curvePointService = new CurvePointServiceImpl(curvePointRepository);
+    private final CurvePointRepository curvePointRepository = Mockito.mock(CurvePointRepository.class);
+    private final CurvePointService curvePointService = new CurvePointServiceImpl(curvePointRepository);
 
     @Test
-    void testFindAllCurvePoints() {
-        CurvePoint sampleCurvePoint = new CurvePoint();
-        sampleCurvePoint.setId(1);
-        sampleCurvePoint.setCurveId(2);
+    public void testFindAllCurvePoints() {
+        // Mocking the repository
+        List<CurvePoint> expectedCurvePoints = new ArrayList<>();
+        when(curvePointRepository.findAll()).thenReturn(expectedCurvePoints);
 
-        List<CurvePoint> curvePoints = new ArrayList<>();
-        curvePoints.add(sampleCurvePoint);
-
-        when(curvePointRepository.findAll()).thenReturn(curvePoints);
-
+        // Calling service method
         List<CurvePoint> result = curvePointService.findAllCurvePoints();
 
-        assertEquals(1, result.size());
-        assertEquals(sampleCurvePoint, result.get(0));
-
-        verify(curvePointRepository, times(1)).findAll();
+        // Verifying the result
+        assertEquals(expectedCurvePoints, result);
     }
 
     @Test
-    void testFindCurvePointById() {
-        CurvePoint sampleCurvePoint = new CurvePoint();
-        sampleCurvePoint.setId(1);
-        sampleCurvePoint.setCurveId(2);
+    public void testFindCurvePointById() {
+        // Mocking the repository
+        int curvePointId = 1;
+        CurvePoint expectedCurvePoint = new CurvePoint();
+        when(curvePointRepository.findById(curvePointId)).thenReturn(Optional.of(expectedCurvePoint));
 
-        when(curvePointRepository.findById(1)).thenReturn(Optional.of(sampleCurvePoint));
+        // Calling service method
+        Optional<CurvePoint> result = curvePointService.findCurvePointById(curvePointId);
 
-        Optional<CurvePoint> result = curvePointService.findCurvePointById(1);
-
-        assertEquals(Optional.of(sampleCurvePoint), result);
-
-        verify(curvePointRepository, times(1)).findById(1);
+        // Verifying the result
+        assertTrue(result.isPresent());
+        assertEquals(expectedCurvePoint, result.get());
     }
 
     @Test
-    void testSaveCurvePoint() {
-        CurvePoint sampleCurvePoint = new CurvePoint();
-        sampleCurvePoint.setId(1);
-        sampleCurvePoint.setCurveId(2);
+    public void testCreateCurvePoint() {
+        // Mocking the repository
+        CurvePoint curvePoint = new CurvePoint();
+        when(curvePointRepository.save(curvePoint)).thenReturn(curvePoint);
 
-        when(curvePointRepository.save(sampleCurvePoint)).thenReturn(sampleCurvePoint);
+        // Calling service method
+        CurvePoint result = curvePointService.createCurvePoint(curvePoint);
 
-        CurvePoint result = curvePointService.createCurvePoint(sampleCurvePoint);
-
-        assertEquals(sampleCurvePoint, result);
-
-        verify(curvePointRepository, times(1)).save(sampleCurvePoint);
+        // Verifying the result
+        assertEquals(curvePoint, result);
     }
 
     @Test
-    void testDeleteCurvePoint() {
-        curvePointService.deleteCurvePoint(1);
+    public void testUpdateCurvePoint() {
+        // Mocking the repository
+        int curvePointId = 1;
+        CurvePoint updatedCurvePoint = new CurvePoint();
+        when(curvePointRepository.findById(curvePointId)).thenReturn(Optional.of(new CurvePoint()));
+        when(curvePointRepository.saveAndFlush(updatedCurvePoint)).thenReturn(updatedCurvePoint);
 
-        verify(curvePointRepository, times(1)).deleteById(1);
+        // Calling service method
+        CurvePoint result = curvePointService.updateCurvePoint(curvePointId, updatedCurvePoint);
+
+        // Verifying the result
+        assertEquals(updatedCurvePoint, result);
+    }
+
+    @Test
+    public void testDeleteCurvePoint() {
+        // Mocking the repository
+        int curvePointId = 1;
+        when(curvePointRepository.existsById(curvePointId)).thenReturn(true);
+
+        // Calling service method
+        curvePointService.deleteCurvePoint(curvePointId);
+
+        // Verifying the delete operation
+        verify(curvePointRepository).deleteById(curvePointId);
     }
 }

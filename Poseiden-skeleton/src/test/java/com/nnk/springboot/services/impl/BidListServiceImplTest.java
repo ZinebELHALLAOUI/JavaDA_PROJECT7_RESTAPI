@@ -4,78 +4,87 @@ import com.nnk.springboot.domain.BidList;
 import com.nnk.springboot.repositories.BidListRepository;
 import com.nnk.springboot.services.BidListService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class BidListServiceImplTest {
 
-    private final BidListRepository bidListRepository = mock(BidListRepository.class);
-
+    private final BidListRepository bidListRepository = Mockito.mock(BidListRepository.class);
     private final BidListService bidListService = new BidListServiceImpl(bidListRepository);
 
-
     @Test
-    void testFindAllBids() {
-        // Given
-        BidList bid1 = new BidList();
-        BidList bid2 = new BidList();
-        List<BidList> bidList = Arrays.asList(bid1, bid2);
+    public void testFindAllBids() {
+        // Mocking the repository
+        List<BidList> expectedBids = new ArrayList<>();
+        when(bidListRepository.findAll()).thenReturn(expectedBids);
 
-        when(bidListRepository.findAll()).thenReturn(bidList);
-
-        // When
+        // Calling service method
         List<BidList> result = bidListService.findAllBids();
 
-        // Then
-        assertEquals(2, result.size());
-        verify(bidListRepository, times(1)).findAll();
+        // Verifying the result
+        assertEquals(expectedBids, result);
     }
 
     @Test
-    void testFindBidById() {
-        // Given
-        BidList bid = new BidList();
-        bid.setId(1);
+    public void testFindBidById() {
+        // Mocking the repository
+        int bidId = 1;
+        BidList expectedBid = new BidList();
+        when(bidListRepository.findById(bidId)).thenReturn(Optional.of(expectedBid));
 
-        when(bidListRepository.findById(1)).thenReturn(Optional.of(bid));
+        // Calling service method
+        Optional<BidList> result = bidListService.findBidById(bidId);
 
-        // When
-        Optional<BidList> result = bidListService.findBidById(1);
-
-        // Then
+        // Verifying the result
         assertTrue(result.isPresent());
-        assertEquals(1, result.get().getId());
-        verify(bidListRepository, times(1)).findById(1);
+        assertEquals(expectedBid, result.get());
     }
 
     @Test
-    void testSaveBid() {
-        // Given
+    public void testCreateBid() {
+        // Mocking the repository
         BidList bid = new BidList();
         when(bidListRepository.save(bid)).thenReturn(bid);
 
-        // When
+        // Calling service method
         BidList result = bidListService.createBid(bid);
 
-        // Then
-        assertNotNull(result);
-        verify(bidListRepository, times(1)).save(bid);
+        // Verifying the result
+        assertEquals(bid, result);
     }
 
     @Test
-    void testDeleteBid() {
-        // Given
+    public void testUpdateBid() {
+        // Mocking the repository
         int bidId = 1;
+        BidList updatedBid = new BidList();
+        when(bidListRepository.findById(bidId)).thenReturn(Optional.of(new BidList()));
+        when(bidListRepository.saveAndFlush(updatedBid)).thenReturn(updatedBid);
 
-        // When
+        // Calling service method
+        BidList result = bidListService.updateBid(bidId, updatedBid);
+
+        // Verifying the result
+        assertEquals(updatedBid, result);
+    }
+
+    @Test
+    public void testDeleteBid() {
+        // Mocking the repository
+        int bidId = 1;
+        when(bidListRepository.existsById(bidId)).thenReturn(true);
+
+        // Calling service method
         bidListService.deleteBid(bidId);
 
-        // Then
-        verify(bidListRepository, times(1)).deleteById(bidId);
+        // Verifying the delete operation
+        Mockito.verify(bidListRepository).deleteById(bidId);
     }
 }

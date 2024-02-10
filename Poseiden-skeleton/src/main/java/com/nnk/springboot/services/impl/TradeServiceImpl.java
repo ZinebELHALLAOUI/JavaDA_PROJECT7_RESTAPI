@@ -43,7 +43,7 @@ public class TradeServiceImpl implements TradeService {
         Trade tradeFound = tradeRepository.findById(id).orElseThrow(() -> new NotFoundException("Trade does not exist"));
         tradeFound.setAccount(trade.getAccount());
         tradeFound.setType(trade.getType());
-        tradeFound.setBuyPrice(trade.getBuyQuantity());
+        tradeFound.setBuyQuantity(trade.getBuyQuantity());
         return tradeRepository.saveAndFlush(tradeFound);
     }
 
