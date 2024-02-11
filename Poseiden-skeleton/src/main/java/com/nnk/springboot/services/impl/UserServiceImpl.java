@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implémentation du service gérant les opérations liées aux utilisateurs (User).
+ */
 @Service
 @Slf4j
 @AllArgsConstructor
@@ -25,6 +28,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Crée un nouvel utilisateur.
+     *
+     * @param user L'utilisateur à créer.
+     * @return L'utilisateur créé.
+     * @throws IllegalArgumentException si le nom d'utilisateur existe déjà.
+     */
     @Override
     public User createUser(final User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -33,12 +43,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.save(user);
     }
 
+    /**
+     * Met à jour un utilisateur existant.
+     *
+     * @param id L'identifiant de l'utilisateur à mettre à jour.
+     * @param user L'utilisateur mis à jour.
+     * @return L'utilisateur mis à jour.
+     * @throws NotFoundException si l'utilisateur n'est pas trouvé.
+     * @throws IllegalArgumentException si le nom d'utilisateur existe déjà.
+     */
     @Override
     public User updateUser(int id, User user) {
         log.info("Updating user : " + user);
         var userFound = userRepository.findById(id).orElseThrow(() -> new NotFoundException("user does not exist"));
         var userByUserNameFound = userRepository.findByUsername(user.getUsername());
-        if (userByUserNameFound.isPresent()){
+        if (userByUserNameFound.isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
         userFound.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -48,18 +67,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.saveAndFlush(userFound);
     }
 
+    /**
+     * Récupère la liste de tous les utilisateurs.
+     *
+     * @return La liste de tous les utilisateurs.
+     */
     @Override
     public List<User> findAll() {
         log.info("Find all users");
         return userRepository.findAll();
     }
 
+    /**
+     * Récupère un utilisateur par son identifiant.
+     *
+     * @param id L'identifiant de l'utilisateur à récupérer.
+     * @return Une option contenant l'utilisateur correspondant s'il existe.
+     */
     @Override
     public Optional<User> findById(int id) {
         log.info("Find user by id : " + id);
         return userRepository.findById(id);
     }
 
+    /**
+     * Supprime un utilisateur par son identifiant.
+     *
+     * @param id L'identifiant de l'utilisateur à supprimer.
+     * @throws NotFoundException si l'utilisateur n'est pas trouvé.
+     */
     @Override
     public void deleteById(int id) {
         log.info("Deleting by user id : " + id);
@@ -67,6 +103,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepository.deleteById(id);
     }
 
+    /**
+     * Charge un utilisateur par son nom d'utilisateur.
+     *
+     * @param username Le nom d'utilisateur de l'utilisateur à charger.
+     * @return Les détails de l'utilisateur chargé.
+     * @throws UsernameNotFoundException si l'utilisateur n'est pas trouvé.
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
