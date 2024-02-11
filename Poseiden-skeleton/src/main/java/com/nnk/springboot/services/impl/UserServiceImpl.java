@@ -56,10 +56,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User updateUser(int id, User user) {
         log.info("Updating user : " + user);
         var userFound = userRepository.findById(id).orElseThrow(() -> new NotFoundException("user does not exist"));
-        var userByUserNameFound = userRepository.findByUsername(user.getUsername());
-        if (userByUserNameFound.isPresent()) {
+        if (!user.getUsername().equalsIgnoreCase(userFound.getUsername()) && userRepository.findByUsername(user.getUsername()).isPresent())
             throw new IllegalArgumentException("Username already exists");
-        }
         userFound.setPassword(passwordEncoder.encode(user.getPassword()));
         userFound.setUsername(user.getUsername());
         userFound.setFullname(user.getFullname());
